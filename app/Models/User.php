@@ -23,7 +23,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        // 'nis',
+        'nis',
         'email',
         'password',
     ];
@@ -46,4 +46,16 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            // Menetapkan role otomatis setelah pengguna dibuat
+            $user->assignRole('santri');
+        });
+
+        // static::creating(function (User $user) {
+        //     $user->nis = '12345678';
+        // });
+    }
 }
