@@ -34,9 +34,10 @@ class UserResource extends Resource
                     ->email()
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('nis')
+                Forms\Components\TextInput::make('password')
+                    ->password()
                     ->required()
-                    ->maxLength(8),
+                    ->maxLength(255),
             ]);
     }
 
@@ -47,8 +48,6 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('nis')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('roles.name')
                     ->label('Role') 
