@@ -23,7 +23,6 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'nis',
         'email',
         'password',
     ];
@@ -47,15 +46,19 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function transaksis()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
     protected static function booted()
     {
         static::created(function ($user) {
-            // Menetapkan role otomatis setelah pengguna dibuat
-            $user->assignRole('santri');
+            // Memeriksa apakah user tidak memiliki role 'admin'
+            if ($user->hasRole('admin')) {
+                // Menetapkan role 'santri' secara otomatis
+                $user->assignRole('santri');
+            }
         });
-
-        // static::creating(function (User $user) {
-        //     $user->nis = '12345678';
-        // });
     }
 }
