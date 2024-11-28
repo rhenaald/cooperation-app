@@ -26,4 +26,18 @@ class Transaction extends Model
     {
         return $this->belongsTo(category::class,  'category_id');
     }
+    
+    public function scopePemasukan($query)
+    {
+        return $query->whereHas('category', function ($query) {
+            $query->where('id', 1);
+        });
+    }
+
+    public function scopePengeluaran($query)
+    {
+        return $query->whereHas('category', function ($query) {
+            $query->where('id', 2);
+        });
+    }
 }
