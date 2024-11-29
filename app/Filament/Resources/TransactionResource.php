@@ -70,11 +70,12 @@ class TransactionResource extends Resource
             Tables\Columns\TextColumn::make('note')->searchable(),
         ])
         ->filters([
-            Tables\Filters\Filter::make('user_id')
+            Tables\Filters\SelectFilter::make('user_id')
             ->label('Filter User')
-            ->query(fn (Builder $query, $value) => $query->where('user_id', $value))
-            ->default(request()->get('user_id')), // Gunakan `user_id` dari URL sebagai default filter
-        ])
+            ->relationship('user', 'name')
+            ->preload()
+            ->default(request()->get('user_id')),
+        ])->hiddenFilterIndicators()
         ->actions([
             Tables\Actions\EditAction::make(),
         ])
