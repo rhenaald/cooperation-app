@@ -17,15 +17,30 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class TransactionResource extends Resource
 {
     protected static ?string $model = Transaction::class;
-    
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+
+    protected static ?string $navigationGroup = 'Tabungan';
+
+    public static function getTableQuery(): Builder
+    {
+        $query = parent::getTableQuery();
+
+        // Cek apakah terdapat parameter `user_id` di URL
+        $userId = request()->get('user_id');
+        if ($userId) {
+            $query->where('user_id', $userId);
+        }
+
+        return $query;
+    }
+
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('users_id')
+                Forms\Components\Select::make('user_id')
                     ->relationship('user', 'name')
                     ->required(),
                 Forms\Components\Select::make('category_id')
@@ -45,41 +60,31 @@ class TransactionResource extends Resource
     }
 
     public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('user.name')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('date_transaction')
-                    ->date()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('amount')
-                    ->numeric()
-                    ->prefix("Rp. ")
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('note')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
+{
+    return $table
+        ->columns([
+            Tables\Columns\TextColumn::make('user.name')->label('User')->sortable(),
+            Tables\Columns\TextColumn::make('date_transaction')->date()->sortable(),
+            Tables\Columns\TextColumn::make('category.name')->label('Kategori')->sortable(),
+            Tables\Columns\TextColumn::make('amount')->numeric()->prefix("Rp. ")->sortable(),
+            Tables\Columns\TextColumn::make('note')->searchable(),
+        ])
+        ->filters([
+            Tables\Filters\Filter::make('user_id')
+            ->label('Filter User')
+            ->query(fn (Builder $query, $value) => $query->where('user_id', $value))
+            ->default(request()->get('user_id')), // Gunakan `user_id` dari URL sebagai default filter
+        ])
+        ->actions([
+            Tables\Actions\EditAction::make(),
+        ])
+        ->bulkActions([
+            Tables\Actions\BulkActionGroup::make([
+                Tables\Actions\DeleteBulkAction::make(),
+            ]),
+        ]);
+}
+
 
     public static function getRelations(): array
     {
