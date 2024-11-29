@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\category;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Transaction extends Model
 {
     use HasFactory;
     
     protected $fillable = [
-        'users_id',
+        'user_id',
         'category_id',
         'date_transaction',
         'amount',
@@ -19,12 +21,12 @@ class Transaction extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class,  'users_id');
+        return $this->belongsTo(User::class);
     }
 
     public function category()
     {
-        return $this->belongsTo(category::class,  'category_id');
+        return $this->belongsTo(category::class);
     }
     
     public function scopePemasukan($query)
