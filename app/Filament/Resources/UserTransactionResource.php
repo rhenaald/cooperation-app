@@ -20,9 +20,9 @@ class UserTransactionResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-credit-card';
 
-    protected static ?string $navigationLabel = 'Tabungan User';
+    protected static ?string $navigationLabel = 'Tabungan Santri';
 
     protected static ?string $navigationGroup = 'Tabungan';
 
@@ -130,9 +130,8 @@ class UserTransactionResource extends Resource
                     ->label('Lihat Transaksi')
                     ->icon('heroicon-o-eye')
                     ->action(function ($record) {
-                        // Arahkan ke halaman atau modal untuk menampilkan data transaksi
                         return redirect()->route('filament.dashboard.resources.transactions.index', [
-                            'user_id' => $record->id, // Mengoper ID user sebagai filter
+                            'user_id' => $record->id,
                         ]);
                     }),
             ])
