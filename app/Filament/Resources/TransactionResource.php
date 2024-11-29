@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TransactionResource\Pages;
 use App\Filament\Resources\TransactionResource\RelationManagers;
 use App\Models\Transaction;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -16,6 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class TransactionResource extends Resource
 {
     protected static ?string $model = Transaction::class;
+    
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
 
@@ -31,6 +33,7 @@ class TransactionResource extends Resource
                     ->required(),
                 Forms\Components\DatePicker::make('date_transaction')
                     ->required()
+                    ->default(now()) 
                     ->maxDate(now()),
                 Forms\Components\TextInput::make('amount')
                     ->required()
@@ -46,12 +49,8 @@ class TransactionResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
-                    ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('category.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('date')
+                Tables\Columns\TextColumn::make('date_transaction')
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('amount')
