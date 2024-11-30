@@ -11,10 +11,11 @@ class UserObserver
      */
     public function created(User $user): void
     {
-        if ($user->roles->isEmpty()) {
-            // Tetapkan role 'santri' jika user belum memiliki role
+        if (!$user->roles->where('id', 1)) {
+            // Jika user tidak memiliki role dengan ID 1, tetapkan role 'santri'
             $user->assignRole('santri');
         }
+             
     }
 
     /**
