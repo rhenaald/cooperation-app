@@ -80,6 +80,7 @@ class UserTransactionResource extends Resource
                 Tables\Actions\Action::make('debit')
                     ->label('Debit')
                     ->icon('heroicon-o-plus')
+                    ->color("success")
                     ->form([
                         Forms\Components\TextInput::make('amount')
                             ->label('Nominal Debit')
@@ -108,6 +109,7 @@ class UserTransactionResource extends Resource
                 Tables\Actions\Action::make('credit')
                     ->label('Credit')
                     ->icon('heroicon-o-minus')
+                    ->color("danger")
                     ->form([
                         Forms\Components\TextInput::make('amount')
                             ->label('Nominal Credit')
