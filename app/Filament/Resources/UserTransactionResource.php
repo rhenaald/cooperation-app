@@ -3,18 +3,19 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
+use App\Models\User;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\Transaction;
+// use Illuminate\Foundation\Auth\User;
 use App\Models\UserTransaction;
 use Filament\Resources\Resource;
-// use Illuminate\Foundation\Auth\User;
-use App\Models\User;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserTransactionResource\Pages;
 use App\Filament\Resources\UserTransactionResource\RelationManagers;
-use App\Models\Transaction;
 
 class UserTransactionResource extends Resource
 {
@@ -114,15 +115,32 @@ class UserTransactionResource extends Resource
                             ->numeric()
                             ->minValue(1)
                             ->maxValue(10000000),
+                        Forms\Components\TextInput::make('note')
+                            ->label('Catatan')
+                            ->nullable() 
+                            ->maxLength(255), 
                     ])
                     ->action(function ($record, array $data) {
                         $amount = $data['amount'];
+                        $note = $data['note'] ?? 'Tidak ada catatan';
+                        $totalDebit = $record->transactions()->where('category_id', 1)->sum('amount'); 
+                        $totalCredit = $record->transactions()->where('category_id', 2)->sum('amount'); 
+                        $currentBalance = $totalDebit - $totalCredit;
+
+                        if ($currentBalance < $amount) {
+                            Notification::make()
+                            ->title('Transaksi Gagal')
+                            ->body('Saldo Anda tidak mencukupi untuk melakukan transaksi ini.')
+                            ->warning()
+                            ->send();
+                        }
+
                         Transaction::create([
                             'user_id' => $record->id,
                             'amount' => $amount,
                             'date_transaction' => now(),
                             'category_id' => 2,
-                            'note' => 'Tambah credit',
+                            'note' => $note,
                         ]);
                     }),
                 
