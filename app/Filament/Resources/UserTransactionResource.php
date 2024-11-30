@@ -150,7 +150,7 @@ class UserTransactionResource extends Resource
                     ->label('Lihat Transaksi')
                     ->icon('heroicon-o-eye')
                     ->action(function ($record) {
-                        return redirect()->route('filament.dashboard.resources.transactions.index', [
+                        return redirect()->route('filament.Admin_dashboard.resources.transactions.index', [
                             'user_id' => $record->id,
                         ]);
                     }),
