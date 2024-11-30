@@ -15,11 +15,11 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         category::create([
-            'name' => 'Pemasukan',
+            'name' => 'Debit',
         ]);
 
         category::create([
-            'name' => 'Pengeluaran',
+            'name' => 'Credit',
         ]);
     }
 }
