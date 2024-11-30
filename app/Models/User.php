@@ -52,4 +52,15 @@ class User extends Authenticatable
         return $this->hasMany(Transaction::class);
     }
 
+//     protected static function booted()
+// {
+//     static::created(function ($user) {
+//         // Jika user tidak memiliki role apapun atau tidak memiliki role 'admin'
+//         if ($user->roles->isEmpty() || !$user->hasRole('admin')) {
+//             // Tetapkan role 'santri' jika user belum memiliki role atau bukan admin
+//             $user->syncRoles(['santri']);
+//         }
+//     });
+// }
+
 }
