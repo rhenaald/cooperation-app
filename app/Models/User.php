@@ -28,6 +28,7 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
+        'roles'
     ];
 
     /**
@@ -49,6 +50,16 @@ class User extends Authenticatable implements FilamentUser
         'email_verified_at' => 'datetime',
     ];
 
+    // protected static function booted()
+    // {
+    //     static::creating(function ($user) {
+    //         // Tentukan role secara eksplisit sebelum user disimpan
+    //         if (!$user->roles) { // Jika role belum diset, atur default role
+    //             $user->roles = 'santri';
+    //         }
+    //     });
+    // }
+
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
@@ -62,20 +73,21 @@ class User extends Authenticatable implements FilamentUser
         if ($panel->getId() === 'Admin_dashboard' && $this->roles->contains('id', 1)){
             return true;
         }
-        else if ($panel->getId() === 'user_dashboard' && $this->roles->contains('id', 2)){
+        else if ($panel->getId() === 'dashboard' && $this->roles->contains('id', 2)){
             return true;
         }else
             return false;
-    }
+    }   
 
     protected static function booted()
     {
         static::created(function ($user) {
-            if (!$user->roles->where('id', 1)) {
-                // Jika user tidak memiliki role dengan ID 1, tetapkan role 'santri'
+            if ($user->hasRole('admin')) {
+                // Menetapkan role 'santri' secara otomatis
                 $user->assignRole('santri');
             }
         });
     }
+
     
 }
