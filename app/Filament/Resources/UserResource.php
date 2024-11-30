@@ -14,6 +14,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class UserResource extends Resource
 {
@@ -40,6 +41,7 @@ class UserResource extends Resource
                     ->unique(ignoreRecord: true),
                 Forms\Components\TextInput::make('password')
                     ->password()
+                    ->default(fn ($context) => $context === 'create' ? '12345' : null)
                     ->required(fn ($context) => $context === 'create')
                     ->maxLength(255)
                     ->dehydrateStateUsing(fn ($state) => Hash::make($state)),
@@ -91,6 +93,19 @@ class UserResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function create(array $data): User
+    {
+        // Setelah form disubmit, Anda bisa menetapkan role secara eksplisit
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'role' => 'santri',  // Set role secara eksplisit
+        ]);
+
+        return $user;
     }
 
     public static function getPages(): array
