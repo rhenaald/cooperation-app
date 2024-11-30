@@ -2,47 +2,48 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use App\Models\User;
-use App\Models\Transaction;
-use Filament\Tables;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Filament\Resources\Resource;
-use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\Hash;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
-use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\UserResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
+use App\Models\User;
+use Filament\Forms;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-m-user-plus';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
-    protected static ?string $navigationLabel = 'Manager Santri';
+    protected static ?string $navigationLabel = 'Manage Santri';
 
-    protected static ?string $navigationGroup = 'User';
+    protected static ?string $navigationGroup = 'Manage';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
+                Section::make(('User Detail'))->schema([
+                    Forms\Components\TextInput::make('name')
+                    ->required(fn ($context) => $context === 'create')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('email')
                     ->email()
-                    ->required()
-                    ->maxLength(255),
+                    ->required(fn ($context) => $context === 'create')
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true),
                 Forms\Components\TextInput::make('password')
                     ->password()
-                    ->required()
-                    ->maxLength(255),
+                    ->required(fn ($context) => $context === 'create')
+                    ->maxLength(255)
+                    ->dehydrateStateUsing(fn ($state) => Hash::make($state)),
+                ])
             ]);
     }
 
@@ -58,7 +59,15 @@ class UserResource extends Resource
                     ->label('Role') 
                     ->getStateUsing(fn ($record) => $record->roles->pluck('name')->join(', '))
                     ->searchable(),
+                Tables\Columns\TextColumn::make('email_verified_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
