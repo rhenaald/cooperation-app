@@ -30,7 +30,7 @@ class WidgetIncomeChart extends ChartWidget
             start: $startDate,
             end: $endDate,
         )
-        ->perDay()
+        ->perWeek()
         ->sum('amount');
  
         return [
