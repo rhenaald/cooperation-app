@@ -32,8 +32,10 @@ class UserTransactionResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('saldo')
+                ->sortable()
                 ->getStateUsing(function ($record) {
                     $pemasukan =  $record->transactions
                         ->filter(function ($transaction) {
@@ -51,6 +53,7 @@ class UserTransactionResource extends Resource
                 })
                 -> money("IDR"),
                 Tables\Columns\TextColumn::make('Debit')
+                ->sortable()
                 ->getStateUsing(function ($record) {
                     return $record->transactions
                         ->filter(function ($transaction) {
@@ -60,6 +63,7 @@ class UserTransactionResource extends Resource
                 })
                 -> money("IDR"),
                 Tables\Columns\TextColumn::make('Credit')
+                ->sortable()
                 ->getStateUsing(function ($record) {
                     return $record->transactions
                         ->filter(function ($transaction) {
@@ -135,15 +139,15 @@ class UserTransactionResource extends Resource
                             ->body('Saldo Anda tidak mencukupi untuk melakukan transaksi ini.')
                             ->warning()
                             ->send();
+                        }else{
+                            Transaction::create([
+                                'user_id' => $record->id,
+                                'amount' => $amount,
+                                'date_transaction' => now(),
+                                'category_id' => 2,
+                                'note' => $note,
+                            ]);
                         }
-
-                        Transaction::create([
-                            'user_id' => $record->id,
-                            'amount' => $amount,
-                            'date_transaction' => now(),
-                            'category_id' => 2,
-                            'note' => $note,
-                        ]);
                     }),
                 
                 Tables\Actions\Action::make('show')
