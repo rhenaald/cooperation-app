@@ -26,5 +26,6 @@ class UserSeeder extends Seeder
             'password' => Hash::make('santri'), 
         ]);
         $santri->assignRole('santri'); 
+        
     }
 }
