@@ -34,7 +34,7 @@ class WidgateIncomeChart extends ChartWidget
         // Pastikan untuk menyetel rentang tanggal dengan benar
         $data = Trend::query($transactionQuery)
             ->between($startDate, $endDate) // Menyatakan rentang tanggal secara eksplisit
-            ->perDay()
+            ->perMonth()
             ->sum('amount');
 
         return [
