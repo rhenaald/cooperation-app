@@ -23,7 +23,8 @@ class UserTransactionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-credit-card';
 
-    protected static ?string $navigationLabel = 'Tabungan Santri';
+    protected static ?string $navigationLabel = 'Tabungan';
+    protected static ?string $pluralLabel = 'Tabungan';
 
     protected static ?string $navigationGroup = 'Tabungan';
 
