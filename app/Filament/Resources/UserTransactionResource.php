@@ -11,6 +11,7 @@ use App\Models\Transaction;
 // use Illuminate\Foundation\Auth\User;
 use App\Models\UserTransaction;
 use Filament\Resources\Resource;
+use Spatie\Permission\Models\Role;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -79,8 +80,19 @@ class UserTransactionResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
-            ])
+                Tables\Filters\SelectFilter::make('role')
+                    ->label('Filter by Role')
+                    ->options(Role::all()->pluck('name', 'id'))
+                    ->default(function () {
+                        $santriRole = Role::where('name', 'santri')->first();
+                        return $santriRole ? $santriRole->id : null;
+                    })
+                    ->query(function ($query, $data) {
+                        return $query->whereHas('roles', function ($q) use ($data) {
+                            $q->where('id', $data);
+                        });
+                    }),
+            ])->hiddenFilterIndicators()
             ->actions([
                 Tables\Actions\Action::make('debit')
                     ->label('Debit')
