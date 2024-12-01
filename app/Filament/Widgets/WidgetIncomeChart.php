@@ -12,7 +12,7 @@ use Filament\Widgets\Concerns\InteractsWithPageFilters;
 class WidgetIncomeChart extends ChartWidget
 {
     use InteractsWithPageFilters;
-    protected static ?string $heading = 'Pemasukan';
+    protected static ?string $heading = 'Debit';
     protected static string $color = 'success';
 
     protected function getData(): array
