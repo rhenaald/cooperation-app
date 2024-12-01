@@ -34,7 +34,7 @@ class WidgateExpenseChart extends ChartWidget
         // Pastikan untuk menyetel rentang tanggal dengan benar
         $data = Trend::query($transactionQuery)
             ->between($startDate, $endDate) // Menyatakan rentang tanggal secara eksplisit
-            ->perDay() // Menghitung per hari
+            ->perMonth() // Menghitung per hari
             ->sum('amount'); // Menghitung jumlah total pengeluaran
 
         return [
