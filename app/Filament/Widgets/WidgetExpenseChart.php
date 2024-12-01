@@ -13,7 +13,7 @@ class WidgetExpenseChart extends ChartWidget
 {
     use InteractsWithPageFilters;
     
-    protected static ?string $heading = 'Pengeluaran';
+    protected static ?string $heading = 'Credit';
     protected static string $color = 'danger';
 
     protected function getData(): array
