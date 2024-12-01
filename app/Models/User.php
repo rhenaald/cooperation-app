@@ -79,15 +79,5 @@ class User extends Authenticatable implements FilamentUser
             return false;
     }   
 
-    protected static function booted()
-    {
-        static::created(function ($user) {
-            if ($user->hasRole('admin')) {
-                // Menetapkan role 'santri' secara otomatis
-                $user->assignRole('santri');
-            }
-        });
-    }
-
     
 }
