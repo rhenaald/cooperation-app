@@ -55,7 +55,8 @@ class TransactionResource extends Resource
                     ->numeric(),
                 Forms\Components\TextInput::make('note')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->default('Tidak ada catatan'),
             ]);
     }
 
@@ -80,9 +81,9 @@ class TransactionResource extends Resource
             Tables\Actions\DeleteAction::make(),
         ])
         ->bulkActions([
-            Tables\Actions\BulkActionGroup::make([
-                Tables\Actions\DeleteBulkAction::make(),
-            ]),
+            // Tables\Actions\BulkActionGroup::make([
+            //     Tables\Actions\DeleteBulkAction::make(),
+            // ]),
         ]);
 }
 
