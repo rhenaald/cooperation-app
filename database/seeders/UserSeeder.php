@@ -20,12 +20,5 @@ class UserSeeder extends Seeder
         ]);
         $admin->assignRole('admin');
 
-        $santri = User::create([
-            'name' => 'santri',
-            'email' => 'santri@example.com',
-            'password' => Hash::make('santri'), 
-        ]);
-        $santri->assignRole('santri'); 
-        
     }
 }
