@@ -22,7 +22,7 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
-    protected static ?string $navigationLabel = 'Manage Santri';
+    protected static ?string $navigationLabel = 'Manage Pengguna';
 
     protected static ?string $navigationGroup = 'Manage';
 
@@ -45,6 +45,12 @@ class UserResource extends Resource
                     ->required(fn ($context) => $context === 'create')
                     ->maxLength(255)
                     ->dehydrateStateUsing(fn ($state) => Hash::make($state)),
+                Forms\Components\Select::make('role')
+                    ->relationship('roles', 'name')
+                    ->preload()
+                    ->default(function ($record) {
+                        return Role::where('name', 'santri')->first()?->id;
+                    }),
                 ])
             ]);
     }
@@ -59,7 +65,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('roles.name')
-                    ->label('Role') 
+                    ->label('Jenis Pengguna') 
                     ->getStateUsing(fn ($record) => $record->roles->pluck('name')->join(', '))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email_verified_at')
@@ -113,8 +119,8 @@ class UserResource extends Resource
     {
         return [
             'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            // 'create' => Pages\CreateUser::route('/create'),
+            // 'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
 }
