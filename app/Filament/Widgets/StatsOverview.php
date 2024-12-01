@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Transaction;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
@@ -31,13 +32,12 @@ class StatsOverview extends BaseWidget
             ->whereBetween('date_transaction', [$startDate, $endDate]) // Sesuaikan juga di sini
             ->sum('amount');
 
+        $santriCount = User::role('santri')->count();
         return [
-            Stat::make('Uang Tersedia','Rp. '.' '. $pemasukan - $pengeluaran)
-                ->descriptionIcon('heroicon-m-banknotes'),
-            Stat::make('Total Pemasukan', 'Rp. '.' '.$pemasukan)
-                ->descriptionIcon('heroicon-m-arrow-trending-up'),
+            Stat::make('Jumlah Santri', (string) $santriCount),
+            Stat::make('Uang Tersedia','Rp. '.' '. $pemasukan - $pengeluaran),
+            Stat::make('Total Pemasukan', 'Rp. '.' '.$pemasukan),
             Stat::make('Total Pengeluaran', 'Rp. '.' '.$pengeluaran)
-                ->descriptionIcon('heroicon-m-arrow-trending-down'),
         ];
     }
 }
