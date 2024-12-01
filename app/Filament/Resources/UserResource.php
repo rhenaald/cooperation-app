@@ -82,16 +82,40 @@ class UserResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
-            ])
+                Tables\Filters\TrashedFilter::make(),
+                Tables\Filters\SelectFilter::make('role')
+                    ->label('Filter by Role')
+                    ->options(Role::all()->pluck('name', 'id'))
+                    ->default(function () {
+                        $santriRole = Role::where('name', 'santri')->first();
+                        return $santriRole ? $santriRole->id : null;
+                    })
+                    ->query(function ($query, $data) {
+                        return $query->whereHas('roles', function ($q) use ($data) {
+                            $q->where('id', $data);
+                        });
+                    }),
+            ])->hiddenFilterIndicators()
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ForceDeleteAction::make(),
+                Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
                 ]),
+            ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
             ]);
     }
 
@@ -101,20 +125,6 @@ class UserResource extends Resource
             //
         ];
     }
-
-    public static function create(array $data): User
-    {
-        // Setelah form disubmit, Anda bisa menetapkan role secara eksplisit
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'role' => 'santri',  // Set role secara eksplisit
-        ]);
-
-        return $user;
-    }
-
     public static function getPages(): array
     {
         return [
