@@ -41,7 +41,7 @@ class TransactionResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -61,8 +61,8 @@ class TransactionResource extends Resource
     {
         return [
             'index' => Pages\ListTransactions::route('/'),
-            'create' => Pages\CreateTransaction::route('/create'),
-            'edit' => Pages\EditTransaction::route('/{record}/edit'),
+            // 'create' => Pages\CreateTransaction::route('/create'),
+            // 'edit' => Pages\EditTransaction::route('/{record}/edit'),
         ];
     }
 }
